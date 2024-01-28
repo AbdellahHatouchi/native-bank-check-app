@@ -34,6 +34,14 @@ const config = createTamagui({
     color: {
       background: 'gray',
       text: 'black',
+      border: 'hsl(0 0% 89.8%)',
+    },
+  },
+  dark: {
+    color: {
+      border: 'hsl(0 0% 14.9%)',
+      background: 'white',
+      text: 'white',
     },
   },
   defaultFont: 'body',

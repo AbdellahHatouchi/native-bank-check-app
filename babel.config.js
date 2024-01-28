@@ -9,8 +9,7 @@ module.exports = function (api) {
       config: './tamagui.config.ts',
     },
   ]);
-
-  plugins.push('expo-router/babel');
+  // plugins.push('expo-router/babel');
 
   return {
     presets: ['babel-preset-expo'],
