@@ -1,8 +1,14 @@
 import { router } from 'expo-router';
 import { View, StyleSheet, Image } from 'react-native';
-import { Button } from 'tamagui';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Text } from 'tamagui';
+
+import { decrement, increment } from '~/features/counter';
+import { RootState } from '~/lib/store';
 
 const Heroes = () => {
+  const count = useSelector((state: RootState) => state.counter.value);
+  const dispatch = useDispatch();
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -10,6 +16,9 @@ const Heroes = () => {
           <Button theme="blue" onPress={() => router.push('/main/')}>
             Get Started
           </Button>
+          <Button onPress={() => dispatch(increment())}>Increment</Button>
+          <Text color="$color">{count}</Text>
+          <Button onPress={() => dispatch(decrement())}>Decrement</Button>
           {/* <Image source={require('/assets/icon.png')} style={styles.image} contentFit="fill" />
           <Image
             source={require('/assets/icon.png')}

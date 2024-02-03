@@ -103,7 +103,7 @@ const SelectItem: React.FC<CustomSelectProps> = (
                         borderRadius="$5"
                         borderWidth="$1"
                         borderColor="$backgroundHover"
-                        value={item.name.toLowerCase()}>
+                        value={item.name}>
                         <Select.ItemText padding="$2" textTransform="uppercase">
                           {item.name}
                         </Select.ItemText>

@@ -4,9 +4,12 @@ import { Slot, SplashScreen, Stack } from 'expo-router';
 import * as SQLite from 'expo-sqlite';
 import React, { useEffect } from 'react';
 import { Platform, useColorScheme } from 'react-native';
+import { Provider } from 'react-redux';
 import { TamaguiProvider, View } from 'tamagui';
 
 import config from '../tamagui.config';
+
+import { store } from '~/lib/store';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -120,7 +123,9 @@ export default function RootLayout() {
         {/* <Stack>
           <Stack.Screen name="(marketing)/index" />
         </Stack> */}
-        <Slot />
+        <Provider store={store}>
+          <Slot />
+        </Provider>
       </ThemeProvider>
     </TamaguiProvider>
   );

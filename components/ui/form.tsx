@@ -8,7 +8,7 @@ import {
   useFormContext,
 } from 'react-hook-form';
 import { ViewProps } from 'react-native';
-import { Input, Label, Paragraph, View } from 'tamagui';
+import { Input, Label, Paragraph, View, useTheme } from 'tamagui';
 
 const Form = FormProvider;
 
@@ -92,14 +92,14 @@ const FormControl = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof Input>
 >(({ ...props }, ref) => {
   const { error, formItemId } = useFormField();
-
+  const theme = useTheme();
   return (
     <Input
       ref={ref}
       id={formItemId}
       borderWidth="$1"
       style={!!error && { borderColor: '#CD2B31' }}
-      cursorColor="#010101"
+      cursorColor={theme.color.get()}
       {...props}
     />
   );

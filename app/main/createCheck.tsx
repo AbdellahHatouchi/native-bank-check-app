@@ -1,7 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useColorScheme } from 'react-native';
+import uuid from 'react-native-uuid';
+import { useDispatch } from 'react-redux';
 import { Button, Form, View, Theme, Spinner, XStack, TextArea, ScrollView } from 'tamagui';
 import * as z from 'zod';
 
@@ -17,11 +20,14 @@ import {
 } from '~/components/ui/form';
 import RadioGroup from '~/components/ui/radio-group';
 import SelectItem from '~/components/ui/select';
+import { addNewBankCheck } from '~/features/bankCheck/bankCheckSlice';
+import Notification, { schedulePushNotification } from '~/features/bankCheck/notifacation';
+import { AppDispatch } from '~/lib/store';
 import { BankList, fakeUserData } from '~/lib/utils';
 
-const formSchema = z.object({
+export const formSchema = z.object({
   checkType: z.enum(['personal', 'customer']),
-  checkNumber: z.string().regex(/^\d{5,12}$/, 'Must be a positive integer with 5 to 12 digits'),
+  checkNumber: z.string().regex(/^\d{5,10}$/, 'Must be a positive integer with 5 to 10 digits'),
   amount: z.coerce.number().positive().min(500, 'The amount must be at least 500.'),
   paymentDate: z.string(),
   userId: z.string(),
@@ -46,6 +52,8 @@ const formSchema = z.object({
 const CreateCheck = () => {
   const theme = useColorScheme();
   const [status, setStatus] = useState<'off' | 'submitting' | 'submitted'>('off');
+  // const { createBankCheck } = useBankCheck();
+  const dispatch = useDispatch<AppDispatch>();
   // // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,11 +73,27 @@ const CreateCheck = () => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setStatus('submitting');
-    console.log(values);
+    try {
+      const id = uuid.v4() as string;
+      dispatch(addNewBankCheck({ ...values, checkStatus: 'open', id })).unwrap();
+      schedulePushNotification(
+        'Upcoming Payment',
+        `Your payment for check ${values.checkNumber} is almost due.`,
+        new Date(new Date().getTime() + 5000),
+        'Wednesday'
+      );
+      // create(values);
+    } catch (error) {
+      console.log(error);
+    }
   }
   useEffect(() => {
     if (status === 'submitting') {
-      const timer = setTimeout(() => setStatus('off'), 2000);
+      const timer = setTimeout(() => {
+        setStatus('off');
+        form.reset();
+        router.navigate('/main/');
+      }, 2000);
       return () => {
         clearTimeout(timer);
       };
@@ -227,6 +251,7 @@ const CreateCheck = () => {
             </Form>
           </FormHook>
         </View>
+        <Notification />
       </ScrollView>
     </Theme>
   );

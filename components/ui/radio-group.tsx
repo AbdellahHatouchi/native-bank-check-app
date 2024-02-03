@@ -11,7 +11,7 @@ type RadioOption = {
 // Create a context to manage radio button state
 const RadioContext = createContext<{
   selectedValue: string | number;
-  setSelectedValue: (value: string | number) => void;
+  setSelectedValue: (value: string | number | any) => void;
 }>({
   selectedValue: '',
   setSelectedValue: () => {},
@@ -43,7 +43,7 @@ const RadioGroup: React.FC<{
   options: RadioOption[];
   defaultValue?: string | number;
   selectedValue: string | number;
-  setSelectedValue: (value: string | number) => void;
+  setSelectedValue: (value: string | number | any) => void;
 }> = ({ options, defaultValue = '', selectedValue, setSelectedValue }) => {
   //   const [selectedValue, setSelectedValue] = useState<string | number>(defaultValue);
   return (

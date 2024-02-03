@@ -23,3 +23,16 @@ export const fakeUserData = [
   { name: 'Daniel Anderson' },
   { name: 'Jessica Thomas' },
 ];
+
+export const formatNumberAsMAD = (number: number): string => {
+  // Format the number as Moroccan Dirham (MAD)
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'MAD' }).format(number);
+};
+export const getBackGound = (checkStatus: string) => {
+  if (checkStatus === 'paid') {
+    return '$green10';
+  } else if (checkStatus === 'open') {
+    return 'white';
+  }
+  return '$blue10';
+};
