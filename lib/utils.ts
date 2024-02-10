@@ -1,4 +1,17 @@
-export const BankList = [
+export type BankName =
+  | 'Attijariwafa Bank'
+  | 'Banque Populaire'
+  | 'BMCE Bank'
+  | 'BMCI Bank'
+  | 'Crédit Agricole du Maroc'
+  | 'Société Générale Maroc'
+  | 'Bank Al-Maghrib'
+  | 'Crédit du Maroc'
+  | 'CIH Bank'
+  | 'Crédit Immobilier et Hôtelier'
+  | 'Banque Centrale Populaire';
+
+export const BankList: { name: BankName }[] = [
   { name: 'Attijariwafa Bank' },
   { name: 'Banque Populaire' },
   { name: 'BMCE Bank' },
@@ -35,4 +48,13 @@ export const getBackGound = (checkStatus: string) => {
     return 'white';
   }
   return '$blue10';
+};
+export const getInitials = (inputString: string) => {
+  const words = inputString.split(' ');
+
+  if (words.length === 1) {
+    return words[0].substring(0, 2).toUpperCase();
+  } else {
+    return words[0].charAt(0).toUpperCase() + words[1].charAt(0).toUpperCase();
+  }
 };

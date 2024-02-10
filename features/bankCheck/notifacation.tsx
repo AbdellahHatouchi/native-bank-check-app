@@ -46,7 +46,7 @@ export async function schedulePushNotification(
   time: Date,
   day: string
 ) {
-  time = new Date(time.getTime() - 5 * 60000);
+  // time = new Date(time.getTime() - 5 * 60000);
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const weekday = days.indexOf(day) + 1;
   const hours = time.getHours();
@@ -61,7 +61,8 @@ export async function schedulePushNotification(
       // weekday,
       // hour: hours,
       // minute: minutes,
-      seconds: 15,
+      // seconds: 15,
+      date: time,
     },
   });
   console.log('notif id on scheduling', id);

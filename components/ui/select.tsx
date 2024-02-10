@@ -9,7 +9,7 @@ interface CustomSelectProps extends SelectProps {
   id: string;
   placeholder: string;
   label: string;
-  items: { name: string }[];
+  items: { id?: string; name: string }[];
   val: string;
   setVal: (value: string) => void;
 }
@@ -103,7 +103,7 @@ const SelectItem: React.FC<CustomSelectProps> = (
                         borderRadius="$5"
                         borderWidth="$1"
                         borderColor="$backgroundHover"
-                        value={item.name}>
+                        value={item.id ?? item.name}>
                         <Select.ItemText padding="$2" textTransform="uppercase">
                           {item.name}
                         </Select.ItemText>

@@ -17,7 +17,13 @@
           "icon": "./assets/icon.png",
           "color": "#ffffff",
           "mode": "production",
-          "notificationPermission" : "Allow This app to push notifications."
+          "notificationsPermission" : "Allow This app to push notifications."
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
         }
       ]
     ],

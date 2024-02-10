@@ -13,6 +13,13 @@ const MainLayout = () => {
         }}
       />
       <Stack.Screen
+        name="createContact"
+        options={{
+          headerTitle: 'Create Contact',
+          headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
         name="[checkNumber]/index"
         options={{
           headerTitle: `CHECK ${checkNumber}`,

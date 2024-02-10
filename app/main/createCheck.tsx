@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useColorScheme } from 'react-native';
 import uuid from 'react-native-uuid';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, View, Theme, Spinner, XStack, TextArea, ScrollView } from 'tamagui';
 import * as z from 'zod';
 
@@ -22,8 +22,8 @@ import RadioGroup from '~/components/ui/radio-group';
 import SelectItem from '~/components/ui/select';
 import { addNewBankCheck } from '~/features/bankCheck/bankCheckSlice';
 import Notification, { schedulePushNotification } from '~/features/bankCheck/notifacation';
-import { AppDispatch } from '~/lib/store';
-import { BankList, fakeUserData } from '~/lib/utils';
+import { AppDispatch, RootState } from '~/lib/store';
+import { BankList, BankName } from '~/lib/utils';
 
 export const formSchema = z.object({
   checkType: z.enum(['personal', 'customer']),
@@ -51,6 +51,8 @@ export const formSchema = z.object({
 
 const CreateCheck = () => {
   const theme = useColorScheme();
+  const { contacts } = useSelector((state: RootState) => state.contact);
+  const formatedContacts = contacts.map(({ name, id }) => ({ id, name }));
   const [status, setStatus] = useState<'off' | 'submitting' | 'submitted'>('off');
   // const { createBankCheck } = useBankCheck();
   const dispatch = useDispatch<AppDispatch>();
@@ -67,7 +69,14 @@ const CreateCheck = () => {
     },
   });
   const userLabel = form.watch('checkType') === 'customer' ? 'Customer' : 'Recipient';
+  const getBankName = () => {
+    const contact = contacts.find((contact) => contact.id === form.getValues('userId'));
+    const bankName: BankName | undefined = BankList.find(
+      (bank) => bank.name === contact?.bankName
+    )?.name;
 
+    bankName && form.setValue('bankName', bankName);
+  };
   // // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
@@ -75,11 +84,14 @@ const CreateCheck = () => {
     setStatus('submitting');
     try {
       const id = uuid.v4() as string;
-      dispatch(addNewBankCheck({ ...values, checkStatus: 'open', id })).unwrap();
+      const contactName =
+        contacts.find((contact) => contact.id === values.userId)?.name ?? 'unknown';
+      dispatch(addNewBankCheck({ ...values, checkStatus: 'open', id, contactName })).unwrap();
       schedulePushNotification(
         'Upcoming Payment',
         `Your payment for check ${values.checkNumber} is almost due.`,
-        new Date(new Date().getTime() + 5000),
+        new Date(values.paymentDate),
+        // new Date(new Date().getTime() + 5000),
         'Wednesday'
       );
       // create(values);
@@ -99,6 +111,7 @@ const CreateCheck = () => {
       };
     }
   }, [status]);
+
   return (
     <Theme name={theme}>
       <ScrollView height="100%">
@@ -186,9 +199,12 @@ const CreateCheck = () => {
                           id="userName"
                           label={`${userLabel} Name`}
                           placeholder={`Select ${userLabel} Name...`}
-                          items={fakeUserData}
+                          items={formatedContacts}
                           val={value}
-                          setVal={onChange}
+                          setVal={(e) => {
+                            onChange(e);
+                            getBankName();
+                          }}
                         />
                         <FormDescription>{`Please select the ${userLabel}  of the bank check.`}</FormDescription>
                         <FormMessage />

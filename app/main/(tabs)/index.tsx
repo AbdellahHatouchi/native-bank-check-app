@@ -129,7 +129,7 @@ const HomePage = () => {
                             </View>
                             <YStack>
                               <SizableText size="$5" textTransform="uppercase" fontWeight="800">
-                                {check.userId}
+                                {check.contactName}
                               </SizableText>
                               <Paragraph theme="alt2">Check Number : {check.checkNumber}</Paragraph>
                             </YStack>

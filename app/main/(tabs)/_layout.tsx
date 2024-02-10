@@ -1,6 +1,7 @@
 import { Link, Tabs } from 'expo-router';
-import { Bell, Wallet2, X } from 'lucide-react-native';
+import { Bell, Plus, Users, Wallet2, X } from 'lucide-react-native';
 import { Pressable, StyleSheet, useColorScheme } from 'react-native';
+import { Button } from 'tamagui';
 
 export default function TabLayout() {
   const theme = useColorScheme();
@@ -42,14 +43,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="three"
+        name="users"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <X color={color} />,
+          title: 'Users',
+          headerTitle: 'Contacts',
+          tabBarIcon: ({ color }) => <Users color={color} />,
+          headerRight: () => (
+            <Link href="/main/createContact" asChild>
+              <Button size="$3" marginHorizontal="$3" themeInverse icon={<Plus size={25} />} />
+            </Link>
+          ),
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="three"
         options={{
           title: 'Tab Two',
           tabBarIcon: ({ color }) => <X color={color} />,

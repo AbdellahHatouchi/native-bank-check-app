@@ -1,8 +1,9 @@
-import { db } from '~/lib/db';
-import { BankCheck } from '~/model/bank-check';
+import { BankCheckWithContactName } from './bankCheckSlice';
 
-const create = (check: BankCheck) => {
-  return new Promise<BankCheck>((resolve, reject) => {
+import { db } from '~/lib/db';
+
+const create = (check: BankCheckWithContactName) => {
+  return new Promise<BankCheckWithContactName>((resolve, reject) => {
     const timestamp = Date.now();
     db.transaction((tx) => {
       tx.executeSql(
@@ -20,7 +21,7 @@ const create = (check: BankCheck) => {
         ],
         (_, result) => {
           console.log('Cheque inserted successfully');
-          resolve({ ...check, timestamp });
+          resolve({ ...check, timestamp, contactName: check.contactName });
         },
         (_, error) => {
           console.log('Error inserting cheque:', error);
@@ -79,9 +80,11 @@ const getAllChecks = ({
   checkNumber: string;
   checkType: 'personal' | 'customer';
 }) => {
-  return new Promise<BankCheck[]>((resolve, reject) => {
+  return new Promise<BankCheckWithContactName[]>((resolve, reject) => {
     db.transaction((tx) => {
-      let query = 'SELECT * FROM bankcheck WHERE checkType = ? AND checkStatus = ?';
+      // let query = 'SELECT * FROM bankcheck WHERE checkType = ? AND checkStatus = ?';
+      let query =
+        'SELECT bankcheck.*, contact.name AS contactName FROM bankcheck LEFT JOIN contact ON bankcheck.userId = contact.id WHERE bankcheck.checkType = ? AND bankcheck.checkStatus = ?';
       const params: string[] = [checkType, checkStatus];
 
       if (checkNumber) {

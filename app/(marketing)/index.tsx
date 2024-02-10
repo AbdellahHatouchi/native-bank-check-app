@@ -12,10 +12,11 @@ const MarketingPage = () => {
           title: 'Welcome',
           headerTitleAlign: 'center',
           headerShadowVisible: false,
+          headerShown: false,
         }}
       />
       <Heroes />
-      <Footer />
+      {/* <Footer /> */}
     </View>
   );
 };

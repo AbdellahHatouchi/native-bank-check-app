@@ -1,11 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
+
 import bankCheckReducer from '~/features/bankCheck/bankCheckSlice';
-import counterReducer from '~/features/counter'
+import contactReducer from '~/features/contact/contactSlice';
+import counterReducer from '~/features/counter';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     bankCheck: bankCheckReducer,
+    contact: contactReducer,
   },
 });
 

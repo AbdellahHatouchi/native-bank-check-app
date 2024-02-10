@@ -29,13 +29,12 @@ import UpadateStatusSheet from '~/components/update-status-sheet';
 import { DeleteBankCheck } from '~/features/bankCheck/bankCheckSlice';
 import { AppDispatch, RootState } from '~/lib/store';
 import { formatNumberAsMAD, getBackGound } from '~/lib/utils';
-import { BankCheck } from '~/model/bank-check';
 
 const CheckIdPage = () => {
   const theme = useColorScheme();
   const { id }: { id: string } = useLocalSearchParams();
   const dispatch = useDispatch<AppDispatch>();
-  const bankChecks = useSelector<RootState>((state) => state.bankCheck.bankChecks) as BankCheck[];
+  const bankChecks = useSelector((state: RootState) => state.bankCheck.bankChecks);
   const check = bankChecks.find((check) => check.id === id);
   const [open, setOpen] = useState<boolean>(false);
   const handleDelete = () => {
@@ -75,7 +74,7 @@ const CheckIdPage = () => {
                 </View>
                 <YStack>
                   <SizableText size="$5" textTransform="uppercase" fontWeight="800">
-                    {check.userId}
+                    {check.contactName}
                   </SizableText>
                   <Paragraph theme="alt2">Check Number : {check.checkNumber}</Paragraph>
                 </YStack>

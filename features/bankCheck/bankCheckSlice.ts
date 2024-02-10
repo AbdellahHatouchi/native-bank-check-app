@@ -4,16 +4,21 @@ import { create, deleteBankCheck, getAllChecks, updateStatus } from './actions';
 
 import { BankCheck } from '~/model/bank-check';
 
+export interface BankCheckWithContactName extends BankCheck {
+  contactName: string;
+}
+
 export interface bankCheckState {
-  bankChecks: BankCheck[];
+  bankChecks: BankCheckWithContactName[];
   isLoading: boolean;
   isError: boolean;
   totalAmount: number;
+  totalChecks: number;
 }
 
 export const addNewBankCheck = createAsyncThunk<
-  BankCheck,
-  BankCheck,
+  BankCheckWithContactName,
+  BankCheckWithContactName,
   { rejectValue: { isError: boolean } }
 >('bankCheck/addNewBankCheck', async (data, thunkApi) => {
   const { rejectWithValue } = thunkApi;
@@ -51,7 +56,7 @@ export const DeleteBankCheck = createAsyncThunk<
   }
 });
 export const getAllBankChecks = createAsyncThunk<
-  BankCheck[],
+  BankCheckWithContactName[],
   { checkNumber: string; checkType: 'personal' | 'customer'; checkStatus: string },
   { rejectValue: { isError: boolean } }
 >('bankCheck/getAllBankChecks', async (data, thunkApi) => {
@@ -69,6 +74,7 @@ const initialState: bankCheckState = {
   isLoading: true,
   isError: false,
   totalAmount: 0,
+  totalChecks: 0,
 };
 const calculateTotalAmount = (bankChecks: BankCheck[]): number => {
   return bankChecks
@@ -87,9 +93,10 @@ const bankCheckSlice = createSlice({
     });
     builder.addCase(
       addNewBankCheck.fulfilled,
-      (state: bankCheckState, action: PayloadAction<BankCheck>) => {
+      (state: bankCheckState, action: PayloadAction<BankCheckWithContactName>) => {
         state.bankChecks.unshift(action.payload);
-        state.totalAmount = action.payload.amount;
+        state.totalAmount += action.payload.amount;
+        state.totalChecks += 1;
         state.isLoading = false;
       }
     );
@@ -140,9 +147,10 @@ const bankCheckSlice = createSlice({
     });
     builder.addCase(
       getAllBankChecks.fulfilled,
-      (state: bankCheckState, action: PayloadAction<BankCheck[]>) => {
+      (state: bankCheckState, action: PayloadAction<BankCheckWithContactName[]>) => {
         state.bankChecks = action.payload;
         state.totalAmount = calculateTotalAmount(action.payload);
+        state.totalChecks = action.payload.length;
         state.isLoading = false;
       }
     );
