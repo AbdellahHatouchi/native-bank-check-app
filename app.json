@@ -17,7 +17,7 @@
           "icon": "./assets/icon.png",
           "color": "#ffffff",
           "mode": "production",
-          "notificationsPermission" : "Allow This app to push notifications."
+          "notificationsPermission": "Allow This app to push notifications."
         }
       ],
       [
@@ -32,7 +32,7 @@
       "tsconfigPaths": true
     },
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/wallet-dark.png",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
@@ -45,14 +45,17 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["remote-notification"]
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/wallet-dark.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.abdellah34hat.mybank"
     },
     "extra": {
       "router": {
