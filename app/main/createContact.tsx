@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as Contacts from 'expo-contacts';
 import { router } from 'expo-router';
-import { Contact2 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useColorScheme } from 'react-native';
@@ -10,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { Button, Form, View, Theme, Spinner, TextArea, ScrollView, Separator } from 'tamagui';
 import * as z from 'zod';
 
+import SelectContact from '~/components/select-contact';
 import {
   Form as FormHook,
   FormField,
@@ -50,12 +50,19 @@ const getContacts = async () => {
   const { status } = await Contacts.requestPermissionsAsync();
   if (status === 'granted') {
     const { data } = await Contacts.getContactsAsync({
-      fields: [Contacts.Fields.FirstName],
+      fields: [Contacts.Fields.Name, Contacts.Fields.ID, Contacts.Fields.PhoneNumbers],
     });
 
     if (data.length > 0) {
       const contact = data[0];
       console.log(contact);
+      return data
+        .filter((obj, index, self) => index === self.findIndex((t) => t.name === obj.name))
+        .map((contact) => ({
+          id: contact.id ?? '',
+          name: contact.name ?? '',
+          phone: contact.phoneNumbers?.[0].number ?? '',
+        }));
     }
   } else {
     console.log('Contacts.requestPermissions', status);
@@ -64,6 +71,7 @@ const getContacts = async () => {
 
 const CreateContact = () => {
   const theme = useColorScheme();
+  const [data, setData] = useState<{ id: string; name: string; phone: string }[]>([]);
   const [status, setStatus] = useState<'off' | 'submitting' | 'submitted'>('off');
   // const { createBankCheck } = useBankCheck();
   const dispatch = useDispatch<AppDispatch>();
@@ -89,8 +97,12 @@ const CreateContact = () => {
       console.log(error);
     }
   }
+  const getContactsHandler = async () => {
+    const res = await getContacts();
+    setData(res ?? []);
+  };
   useEffect(() => {
-   getContacts();
+    getContactsHandler();
   }, []);
   useEffect(() => {
     if (status === 'submitting') {
@@ -104,13 +116,22 @@ const CreateContact = () => {
       };
     }
   }, [status]);
+  const handleChangeContact = (id: string) => {
+    const contact = data.find((contact) => id === contact.id);
+    form.setValue('name', contact?.name ?? '');
+    form.setValue('phoneNumber', contact?.phone ?? '');
+  };
   return (
     <Theme name={theme}>
       <ScrollView height="100%">
         <View padding="$2">
-          <Button themeInverse icon={<Contact2 color="#000" size={25} />}>
-            Import Contact
-          </Button>
+          <SelectContact
+            id="contact"
+            label="Import Contact"
+            items={data}
+            val=""
+            setVal={(val) => handleChangeContact(val)}
+          />
           <Separator marginVertical={15} />
           <FormHook {...form}>
             <Form onSubmit={form.handleSubmit(onSubmit)}>

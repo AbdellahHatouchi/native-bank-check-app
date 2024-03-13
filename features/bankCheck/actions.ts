@@ -84,9 +84,13 @@ const getAllChecks = ({
     db.transaction((tx) => {
       // let query = 'SELECT * FROM bankcheck WHERE checkType = ? AND checkStatus = ?';
       let query =
-        'SELECT bankcheck.*, contact.name AS contactName FROM bankcheck LEFT JOIN contact ON bankcheck.userId = contact.id WHERE bankcheck.checkType = ? AND bankcheck.checkStatus = ?';
-      const params: string[] = [checkType, checkStatus];
+        'SELECT bankcheck.*, contact.name AS contactName FROM bankcheck LEFT JOIN contact ON bankcheck.userId = contact.id WHERE bankcheck.checkType = ?';
+      const params: string[] = [checkType];
 
+      if (checkStatus !== 'all') {
+        query += ' AND bankcheck.checkStatus = ?';
+        params.push(checkStatus);
+      }
       if (checkNumber) {
         query += ' AND checkNumber LIKE ?';
         params.push(`%${checkNumber}%`);

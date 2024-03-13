@@ -45,7 +45,7 @@ export const getBackGound = (checkStatus: string) => {
   if (checkStatus === 'paid') {
     return '$green10';
   } else if (checkStatus === 'open') {
-    return 'white';
+    return '$backgroundPress';
   }
   return '$blue10';
 };
